@@ -36,7 +36,8 @@ conn = redshift_connector.connect(
     database = environ['DB_NAME'],
     password = environ['DB_PASSWORD'],
     port = environ['DB_PORT'],
-    host = environ['DB_HOST']
+    host = environ['DB_HOST'],
+    timeout = 120
 )
 
 # %% [markdown]
@@ -47,7 +48,7 @@ cur = conn.cursor()
 cur.execute(
 """
 SELECT 
-    airport_name
+    airport_code
 FROM
     airport
 ;
@@ -61,7 +62,7 @@ known_airports
 # Remove known airports from the data to upload
 
 # %%
-airports_to_add = all_airports.drop(all_airports[all_airports['airport_name'].isin(known_airports)].index)
+airports_to_add = all_airports.drop(all_airports[all_airports['LocID'].isin(known_airports)].index)
 airports_to_add
 
 # %% [markdown]
@@ -220,6 +221,7 @@ VALUES
 ;
 """, param_sets=new_airports
 )
+conn.commit()
 cur.close()
 
 # %% [markdown]
