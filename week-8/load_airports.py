@@ -220,6 +220,7 @@ VALUES
 ;
 """, param_sets=new_airports
 )
+conn.commit()
 cur.close()
 
 # %% [markdown]
